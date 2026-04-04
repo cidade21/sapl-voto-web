@@ -1,0 +1,9 @@
+services:
+  - type: static
+    name: sapl-voto-web
+    staticPublishPath: dist
+    buildCommand: pnpm install && pnpm build
+    envVars:
+      - key: VITE_API_URL
+        value: https://sapl-voto-api.onrender.com
+    autoDeploy: true
