@@ -6,6 +6,7 @@ import { Login } from '@/pages/Login';
 import { ParlamentarHome } from '@/pages/ParlamentarHome';
 import { MateriaDetail } from '@/pages/MateriaDetail';
 import { OperadorHome } from '@/pages/OperadorHome';
+import { OperadorFeature } from '@/pages/OperadorFeature';
 import '@/styles/index.css';
 
 function App() {
@@ -45,6 +46,39 @@ function App() {
           element={
             <ProtectedRoute requiredRole="operador">
               <OperadorHome />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/operador/nova-sessao"
+          element={
+            <ProtectedRoute requiredRole="operador">
+              <OperadorFeature
+                title="Nova Sessão"
+                description="Esta área já possui rota protegida e está pronta para receber o formulário de criação da sessão."
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/operador/sessoes"
+          element={
+            <ProtectedRoute requiredRole="operador">
+              <OperadorFeature
+                title="Minhas Sessões"
+                description="Esta área concentra o acompanhamento e a gestão das sessões do operador."
+              />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/operador/relatorios"
+          element={
+            <ProtectedRoute requiredRole="operador">
+              <OperadorFeature
+                title="Relatórios"
+                description="Esta área reúne os relatórios e resultados das votações para acompanhamento do operador."
+              />
             </ProtectedRoute>
           }
         />

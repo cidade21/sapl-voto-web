@@ -11,6 +11,7 @@ interface VotacaoStore extends VotacaoState {
   setError: (error: string | null) => void;
   fetchSessaoAtiva: () => Promise<void>;
   fetchMaterias: (sessaoId: number) => Promise<void>;
+  fetchMateria: (materiaId: number) => Promise<Materia | null>;
   fetchPlacar: (materiaId: number) => Promise<void>;
   fetchMeuVoto: (materiaId: number) => Promise<void>;
   registrarVoto: (materiaId: number, voto: 'sim' | 'nao' | 'abstencao') => Promise<void>;
@@ -54,6 +55,27 @@ export const useVotacaoStore = create<VotacaoStore>((set, get) => ({
       set({ materias: response.data.result, isLoading: false });
     } catch (error: any) {
       set({ error: error.message, isLoading: false });
+    }
+  },
+
+  fetchMateria: async (materiaId) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await votacaoAPI.getMateria(materiaId);
+      const materia = response.data.result as Materia;
+
+      set((state) => {
+        const materias = state.materias.some((item) => item.id === materia.id)
+          ? state.materias.map((item) => (item.id === materia.id ? materia : item))
+          : [...state.materias, materia];
+
+        return { materias, isLoading: false };
+      });
+
+      return materia;
+    } catch (error: any) {
+      set({ error: error.message, isLoading: false });
+      return null;
     }
   },
 
