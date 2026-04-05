@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:3000';
+const rawApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
+const normalizedApiOrigin = rawApiUrl?.replace(/\/+$/, '').replace(/\/api$/, '');
+const API_BASE_URL = normalizedApiOrigin ? `${normalizedApiOrigin}/api` : '/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -32,34 +34,34 @@ api.interceptors.response.use(
 
 export const votacaoAPI = {
   // Sessões
-  getSessaoAtiva: () => api.get('/api/trpc/votacao.sessao.ativa'),
-  getSessoes: () => api.get('/api/trpc/votacao.sessao.listar'),
-  getSessao: (id: number) => api.get(`/api/trpc/votacao.sessao.obter?input=${JSON.stringify({ sessaoId: id })}`),
+  getSessaoAtiva: () => api.get('/trpc/votacao.sessao.ativa'),
+  getSessoes: () => api.get('/trpc/votacao.sessao.listar'),
+  getSessao: (id: number) => api.get(`/trpc/votacao.sessao.obter?input=${JSON.stringify({ sessaoId: id })}`),
   criarSessao: (data: { dataInicio: Date; descricao?: string }) =>
-    api.post('/api/trpc/votacao.sessao.criar', { input: data }),
+    api.post('/trpc/votacao.sessao.criar', { input: data }),
   atualizarSessao: (id: number, data: any) =>
-    api.patch(`/api/trpc/votacao.sessao.atualizar?input=${JSON.stringify({ sessaoId: id, ...data })}`, {}),
+    api.patch(`/trpc/votacao.sessao.atualizar?input=${JSON.stringify({ sessaoId: id, ...data })}`, {}),
 
   // Matérias
-  getMateria: (id: number) => api.get(`/api/trpc/votacao.materia.obter?input=${JSON.stringify({ materiaId: id })}`),
+  getMateria: (id: number) => api.get(`/trpc/votacao.materia.obter?input=${JSON.stringify({ materiaId: id })}`),
   getMateriasSessionao: (sessaoId: number) =>
-    api.get(`/api/trpc/votacao.materia.listarSessao?input=${JSON.stringify({ sessaoId })}`),
-  criarMateria: (data: any) => api.post('/api/trpc/votacao.materia.criar', { input: data }),
+    api.get(`/trpc/votacao.materia.listarSessao?input=${JSON.stringify({ sessaoId })}`),
+  criarMateria: (data: any) => api.post('/trpc/votacao.materia.criar', { input: data }),
   atualizarMateria: (id: number, data: any) =>
-    api.patch(`/api/trpc/votacao.materia.atualizar?input=${JSON.stringify({ materiaId: id, ...data })}`, {}),
+    api.patch(`/trpc/votacao.materia.atualizar?input=${JSON.stringify({ materiaId: id, ...data })}`, {}),
 
   // Votos
   registrarVoto: (materiaId: number, voto: 'sim' | 'nao' | 'abstencao') =>
-    api.post('/api/trpc/votacao.voto.registrar', { input: { materiaId, voto } }),
+    api.post('/trpc/votacao.voto.registrar', { input: { materiaId, voto } }),
   getVotoParlamentar: (materiaId: number) =>
-    api.get(`/api/trpc/votacao.voto.obterParlamentar?input=${JSON.stringify({ materiaId })}`),
+    api.get(`/trpc/votacao.voto.obterParlamentar?input=${JSON.stringify({ materiaId })}`),
   getPlacar: (materiaId: number) =>
-    api.get(`/api/trpc/votacao.voto.placar?input=${JSON.stringify({ materiaId })}`),
+    api.get(`/trpc/votacao.voto.placar?input=${JSON.stringify({ materiaId })}`),
 
   // Auth
-  login: (email: string, password: string) => api.post('/api/trpc/auth.login', { input: { email, password } }),
-  logout: () => api.post('/api/trpc/auth.logout'),
-  getMe: () => api.get('/api/trpc/auth.me'),
+  login: (email: string, password: string) => api.post('/trpc/auth.login', { input: { email, password } }),
+  logout: () => api.post('/trpc/auth.logout'),
+  getMe: () => api.get('/trpc/auth.me'),
 };
 
 export default api;
