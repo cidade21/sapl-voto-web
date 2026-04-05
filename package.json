@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Versão web do SAPL Votação Coité",
   "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20 <25"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
