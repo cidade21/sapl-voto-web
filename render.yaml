@@ -3,6 +3,10 @@ services:
     name: sapl-voto-web
     staticPublishPath: dist
     buildCommand: pnpm install && pnpm build
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
     envVars:
       - key: VITE_API_URL
         value: https://sapl-voto-api.onrender.com
