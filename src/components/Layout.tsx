@@ -23,7 +23,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
         <div className="header-content">
           <div className="header-brand">
             <h1>SAPL Votação</h1>
-            <span className="header-subtitle">Coité</span>
+            <span className="header-subtitle">Treinamento</span>
           </div>
           
           {title && <h2 className="header-title">{title}</h2>}
@@ -49,7 +49,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
       </main>
 
       <footer className="footer">
-        <p>&copy; 2026 Câmara de Conceição do Coité. Todos os direitos reservados.</p>
+        <p>&copy; 2026 SAPL 31 Demo - sapl31demo.interlegis.leg.br</p>
       </footer>
     </div>
   );

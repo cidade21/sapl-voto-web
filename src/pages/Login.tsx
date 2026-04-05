@@ -38,7 +38,7 @@ export const Login: React.FC = () => {
       <div className="login-box">
         <div className="login-header">
           <h1>SAPL Votação</h1>
-          <p>Coité</p>
+          <p>Treinamento</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
