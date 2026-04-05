@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
+import { getErrorMessage } from '@/services/api';
 import './Login.css';
 
 export const Login: React.FC = () => {
@@ -27,8 +28,8 @@ export const Login: React.FC = () => {
 
     try {
       await login(email, password);
-    } catch (err: any) {
-      setLocalError(err.response?.data?.message || 'Erro ao fazer login');
+    } catch (error: unknown) {
+      setLocalError(getErrorMessage(error, 'Erro ao fazer login'));
     }
   };
 

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { User, AuthState } from '@/types';
-import { votacaoAPI } from '@/services/api';
+import { getErrorMessage, votacaoAPI } from '@/services/api';
 
 interface AuthStore extends AuthState {
   login: (email: string, password: string) => Promise<void>;
@@ -23,8 +23,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
       const { user, token } = response.data.result;
       localStorage.setItem('token', token);
       set({ user, isAuthenticated: true, isLoading: false });
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Erro ao fazer login';
+    } catch (error: unknown) {
+      const errorMessage = getErrorMessage(error, 'Erro ao fazer login');
       set({ error: errorMessage, isLoading: false });
       throw error;
     }

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { VotacaoState, Sessao, Materia, Placar, Voto } from '@/types';
-import { votacaoAPI } from '@/services/api';
+import { getErrorMessage, votacaoAPI } from '@/services/api';
 
 interface VotacaoStore extends VotacaoState {
   setSessaoAtiva: (sessao: Sessao | null) => void;
@@ -43,8 +43,8 @@ export const useVotacaoStore = create<VotacaoStore>((set, get) => ({
     try {
       const response = await votacaoAPI.getSessaoAtiva();
       set({ sessaoAtiva: response.data.result, isLoading: false });
-    } catch (error: any) {
-      set({ error: error.message, isLoading: false });
+    } catch (error: unknown) {
+      set({ error: getErrorMessage(error, 'Erro ao carregar sessão ativa'), isLoading: false });
     }
   },
 
@@ -53,8 +53,8 @@ export const useVotacaoStore = create<VotacaoStore>((set, get) => ({
     try {
       const response = await votacaoAPI.getMateriasSessionao(sessaoId);
       set({ materias: response.data.result, isLoading: false });
-    } catch (error: any) {
-      set({ error: error.message, isLoading: false });
+    } catch (error: unknown) {
+      set({ error: getErrorMessage(error, 'Erro ao carregar matérias'), isLoading: false });
     }
   },
 
@@ -73,8 +73,8 @@ export const useVotacaoStore = create<VotacaoStore>((set, get) => ({
       });
 
       return materia;
-    } catch (error: any) {
-      set({ error: error.message, isLoading: false });
+    } catch (error: unknown) {
+      set({ error: getErrorMessage(error, 'Erro ao carregar matéria'), isLoading: false });
       return null;
     }
   },
@@ -85,8 +85,8 @@ export const useVotacaoStore = create<VotacaoStore>((set, get) => ({
       set((state) => ({
         placar: { ...state.placar, [materiaId]: response.data.result },
       }));
-    } catch (error: any) {
-      set({ error: error.message });
+    } catch (error: unknown) {
+      set({ error: getErrorMessage(error, 'Erro ao carregar placar') });
     }
   },
 
@@ -112,8 +112,8 @@ export const useVotacaoStore = create<VotacaoStore>((set, get) => ({
       await state.fetchPlacar(materiaId);
       await state.fetchMeuVoto(materiaId);
       set({ isLoading: false });
-    } catch (error: any) {
-      set({ error: error.message, isLoading: false });
+    } catch (error: unknown) {
+      set({ error: getErrorMessage(error, 'Erro ao registrar voto'), isLoading: false });
       throw error;
     }
   },
