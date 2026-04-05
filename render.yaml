@@ -1,4 +1,16 @@
 services:
+  - type: web
+    name: sapl-voto-api
+    runtime: node
+    rootDir: backend
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://sapl-voto-web.onrender.com
+
   - type: static
     name: sapl-voto-web
     staticPublishPath: dist

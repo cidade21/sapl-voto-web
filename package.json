@@ -9,10 +9,14 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:api": "pnpm --dir backend dev",
     "build": "tsc && vite build",
+    "build:api": "pnpm --dir backend build",
+    "build:all": "pnpm build && pnpm build:api",
     "preview": "vite preview",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "type-check:api": "pnpm --dir backend type-check"
   },
   "dependencies": {
     "react": "^18.2.0",
