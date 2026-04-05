@@ -9,7 +9,17 @@ export const MateriaDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [selectedVoto, setSelectedVoto] = useState<'sim' | 'nao' | 'abstencao' | null>(null);
-  const { materias, placar, meuVoto, isLoading, registrarVoto, fetchPlacar, fetchMeuVoto } = useVotacaoStore();
+  const {
+    materias,
+    placar,
+    meuVoto,
+    isLoading,
+    error,
+    registrarVoto,
+    fetchMateria,
+    fetchPlacar,
+    fetchMeuVoto,
+  } = useVotacaoStore();
 
   const materiaId = id ? parseInt(id) : 0;
   const materia = materias.find((m) => m.id === materiaId);
@@ -18,6 +28,10 @@ export const MateriaDetail: React.FC = () => {
 
   useEffect(() => {
     if (materiaId) {
+      if (!materia) {
+        fetchMateria(materiaId);
+      }
+
       fetchPlacar(materiaId);
       fetchMeuVoto(materiaId);
       
@@ -28,7 +42,7 @@ export const MateriaDetail: React.FC = () => {
 
       return () => clearInterval(interval);
     }
-  }, [materiaId, fetchPlacar, fetchMeuVoto]);
+  }, [materia, materiaId, fetchMateria, fetchPlacar, fetchMeuVoto]);
 
   const handleVoto = async (voto: 'sim' | 'nao' | 'abstencao') => {
     try {
@@ -39,11 +53,21 @@ export const MateriaDetail: React.FC = () => {
     }
   };
 
+  if (!materia && isLoading) {
+    return (
+      <Layout title="Carregando materia">
+        <div className="error-container">
+          <p>Carregando materia...</p>
+        </div>
+      </Layout>
+    );
+  }
+
   if (!materia) {
     return (
       <Layout title="Matéria não encontrada">
         <div className="error-container">
-          <p>Matéria não encontrada</p>
+          <p>{error || 'Matéria não encontrada'}</p>
           <button onClick={() => navigate('/parlamentar')} className="btn btn-primary">
             Voltar
           </button>
