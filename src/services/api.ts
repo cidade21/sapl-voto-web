@@ -1,4 +1,22 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+
+type ApiMutationPayload = Record<string, unknown>;
+
+interface ApiErrorResponse {
+  message?: string;
+}
+
+export const getErrorMessage = (error: unknown, fallback: string): string => {
+  if (axios.isAxiosError<ApiErrorResponse>(error)) {
+    return error.response?.data?.message || error.message || fallback;
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return fallback;
+};
 
 const rawApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
 const normalizedApiOrigin = rawApiUrl?.replace(/\/+$/, '').replace(/\/api$/, '');
@@ -23,7 +41,7 @@ api.interceptors.request.use((config) => {
 // Interceptor para tratar erros
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  (error: AxiosError<ApiErrorResponse>) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';
@@ -39,15 +57,15 @@ export const votacaoAPI = {
   getSessao: (id: number) => api.get(`/trpc/votacao.sessao.obter?input=${JSON.stringify({ sessaoId: id })}`),
   criarSessao: (data: { dataInicio: Date; descricao?: string }) =>
     api.post('/trpc/votacao.sessao.criar', { input: data }),
-  atualizarSessao: (id: number, data: any) =>
+  atualizarSessao: (id: number, data: ApiMutationPayload) =>
     api.patch(`/trpc/votacao.sessao.atualizar?input=${JSON.stringify({ sessaoId: id, ...data })}`, {}),
 
   // Matérias
   getMateria: (id: number) => api.get(`/trpc/votacao.materia.obter?input=${JSON.stringify({ materiaId: id })}`),
   getMateriasSessionao: (sessaoId: number) =>
     api.get(`/trpc/votacao.materia.listarSessao?input=${JSON.stringify({ sessaoId })}`),
-  criarMateria: (data: any) => api.post('/trpc/votacao.materia.criar', { input: data }),
-  atualizarMateria: (id: number, data: any) =>
+  criarMateria: (data: ApiMutationPayload) => api.post('/trpc/votacao.materia.criar', { input: data }),
+  atualizarMateria: (id: number, data: ApiMutationPayload) =>
     api.patch(`/trpc/votacao.materia.atualizar?input=${JSON.stringify({ materiaId: id, ...data })}`, {}),
 
   // Votos
